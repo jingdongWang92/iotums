@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "classpath:org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jcnetwork.iotums.persistence.repository.UserMapper">
+     
+     <resultMap id="userMap" type="com.jcnetwork.iotums.entity.User">
+        <result column="id" property="id" />
+        <result column="guid" property="guid" />
+        <result column="archived" property="archived" />
+        <result column="create_time" property="createTime" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="password" property="password" />
+        <result column="username" property="username" />
+        <result column="last_login_time" property="lastLoginTime" />
+    </resultMap>
+   
+    
+     <select id="findByGuid" parameterType="java.lang.String" resultMap="userMap">
+        select * from user where  guid = #{guid}
+     </select>
+     
+     <insert id="saveUser" parameterType="com.jcnetwork.iotums.entity.User">
+        insert into user_
+        	(guid,archived,create_time,email,password,username,phone)
+        values (#{guid},#{archived},#{createTime},#{email},#{password},#{username},#{phone})
+     </insert>
+     
+     <insert id="savePrivilege" parameterType="java.util.Map">
+        insert into user_privilege
+        	   (user_id, privilege)
+        select user_id,#{privilege} from user_ u where u.guid = #{guid}
+     </insert>
+     
+    <!--  <update id="updateUser" parameterType="java.util.Map">
+        update oauth_client_details set archived = ? where client_id = ?
+     </update> -->
+     
+     <select id="findByUsername" parameterType="java.lang.String" resultMap="userMap">
+       select * from user where username = #{username} and archived = 0 
+     </select>
+     
+     <select id="findUsersByUsername" parameterType="java.lang.String" resultMap="userMap">
+     	select * from user
+        where archived = 0
+       	<if test="_parameter != null">
+       		and username like CONCAT('%',#{username},'%') 
+       	</if> 
+        order by create_time desc 
+     </select>
+     
+     <select id="findUserByEmail" parameterType="java.lang.String" resultMap="userMap">
+     	select * from user
+        where archived = 0
+       	<if test="_parameter != null">
+       		and email like CONCAT('%',#{email},'%') 
+       	</if> 
+        order by create_time desc 
+     </select>
+     
+     <select id="findPrivilegesByUserId" parameterType="int" resultType="String">
+        select privilege from user_privilege where user_id = #{userId}
+     </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "classpath:org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jcnetwork.iotums.persistence.repository.OauthMapper">
+     
+     <resultMap id="oauthClientDetailsRowMap" type="com.jcnetwork.iotums.entity.OauthClientDetails">
+        <result column="client_id" property="clientId" />
+        <result column="resource_ids" property="resourceIds" />
+        <result column="client_secret" property="clientSecret" />
+        <result column="scope" property="scope" />
+        <result column="authorized_grant_types" property="authorizedGrantTypes" />
+        <result column="web_server_redirect_uri" property="webServerRedirectUri" />
+        <result column="authorities" property="authorities" />
+        <result column="access_token_validity" property="accessTokenValidity" />
+        <result column="refresh_token_validity" property="refreshTokenValidity" />
+        <result column="additional_information" property="additionalInformation" />
+        <result column="create_time" property="createTime" />
+        <result column="archived" property="archived" />
+        <result column="trusted" property="trusted" />
+        <result column="autoapprove" property="autoApprove" />
+    </resultMap>
+   
+    
+     <select id="findOauthClientDetails" parameterType="java.lang.String" resultMap="oauthClientDetailsRowMap">
+        select * from oauth_client_details where  client_id = #{clientId}
+     </select>
+     
+     <select id="findAllOauthClientDetails" parameterType="java.util.Map" resultMap="oauthClientDetailsRowMap">
+        select * from oauth_client_details order by create_time desc 
+     </select>
+     
+     <update id="updateOauthClientDetailsArchive" parameterType="java.util.Map">
+        update oauth_client_details set archived = #{archive} where client_id = #{clientId}
+     </update>
+     
+     <insert id="saveOauthClientDetails" parameterType="com.jcnetwork.iotums.entity.OauthClientDetails" >
+       insert into oauth_client_details
+			       (client_id,
+			       resource_ids,
+			       client_secret,
+			       scope,
+			       authorized_grant_types,
+			       web_server_redirect_uri,
+			       authorities,
+			       access_token_validity,
+			       refresh_token_validity,
+			       additional_information,
+			       trusted,
+			       autoapprove) 
+           values (#{clientId},
+           		   #{resourceIds},
+           		   #{clientSecret},
+			       #{scope},
+			       #{authorizedGrantTypes},
+			       #{webServerRedirectUri},
+			       #{authorities},
+			       #{accessTokenValidity},
+			       #{refreshTokenValidity},
+			       #{additionalInformation},
+			       #{trusted},
+			       #{autoApprove})
+     </insert>
+</mapper>
